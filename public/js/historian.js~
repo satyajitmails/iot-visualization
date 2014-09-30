@@ -1,0 +1,190 @@
+function drawGraph(seriesData)
+{
+	// instantiate our graph!
+
+	var graph = new Rickshaw.Graph( {
+		element: document.getElementById("chart"),
+		width: 1000,
+		height: 200,
+		renderer: 'line',
+		series:  seriesData
+	} );
+
+	
+	var legend = new Rickshaw.Graph.Legend( {
+		element: document.querySelector('#legend'),
+		graph: graph
+	} );
+
+	var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+	    graph: graph,
+	    legend: legend
+	});
+
+	var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+	    graph: graph,
+	    legend: legend
+	});
+	
+	var y_ticks = new Rickshaw.Graph.Axis.Y( {
+		graph: graph,
+		orientation: 'left',
+		tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+		element: document.getElementById('y_axis')
+	} );
+
+	this.x_ticks = new Rickshaw.Graph.Axis.X({
+		graph: graph,
+		ticks: 5,
+		tickFormat: function(x) {
+			return new Date(x * 1000).toLocaleString();
+		}
+	});
+
+	var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+		graph: graph,
+		xFormatter: function(x) {
+			return new Date(x * 1000).toLocaleString();
+		}
+		    
+	} );
+
+	
+	//var axes = new Rickshaw.Graph.Axis.Time( { graph: graph } );
+		
+	graph.render();
+
+
+
+}
+
+
+var getJSON = function(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.setRequestHeader("Authorization","Basic " + btoa("a:mz41u:5oxdzprj4j:*b1En?Tla72Bs@XvXz"));
+    xhr.withCredentials=true;
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      console.log("response headers:\n" + xhr.getAllResponseHeaders());
+      if (status == 200) {
+        resolve(xhr.response);
+      } else {
+        reject(status);
+      }
+    };
+    xhr.send();
+  });
+};
+
+
+function displayChart(device){
+	var brandNames={};
+	brandNames.WFW70HEBW='Whirlpool® Duet® 4.1 cu. ft. Front Load Washer with the Cold Wash cycle';
+	brandNames.WDL785SAAM='Whirlpool® Smart Dishwasher with 6th Sense Live™ technology';
+	brandNames.WED95HEDC='Whirlpool® 7.4 cu. ft. Duet® Electric Steam Dryer with Steam Refresh Cycle';
+	brandNames.WED4850BW='Whirlpool® 7.0 cu. ft. HE Dryer with AccuDry™ Sensor Drying System';
+	brandNames.WFL98HEBU='Whirlpool® Smart Front Load Washer with 6th Sense Live™ Technology';
+	 
+	//var url = document.getElementById("historian_url").value;
+	//var url = "http://iot-historian-prod.mybluemix.net/historian/api/v0001/mz41u/WFL98HEBU/washer0006";
+	//var tokens = url.split('/');
+	var tokens = device.split(':');
+        console.log('brand: ' + brandNames[tokens[2]]);
+	var device_url="https://internetofthings.ibmcloud.com/api/v0001/organizations/" + tokens[1] + "/devices/" + tokens[2] + "/" + tokens[3];
+	console.log("device URL: " + device_url);
+	getJSON(device_url).then(function(data) {
+
+		console.log("device: " + JSON.stringify(data));
+		var device_html='<b>' + brandNames[tokens[2]] + '</b><br>';
+		device_html+='Model: ' + data.type + '<br>';
+		device_html+='Registered: ' + data.registration.date + '<br>';
+		document.getElementById("appliance_info_container").innerHTML=device_html;
+	  
+	}, function(status) {
+
+	  alert('Something went wrong.');
+	  
+	});
+        //document.getElementById("appliance_info_container").innerHTML='<bold>' + brandNames[tokens[2]] + '</bold>';
+	document.getElementById("appliance_image").src="images/" + tokens[2] + ".jpg";
+	var historian_url = 'http://iot-historian-prod.mybluemix.net/historian/api/v0001/' + tokens[1] + '/' + tokens[2] + '/' + tokens[3];
+	//var historian_url = 'https://internetofthings.ibmcloud.com/api/v0001/historian/' + tokens[1] + '/' + tokens[2] + '/' + tokens[3];
+	//img.src='images/' + tokens[2] + '.jpg';
+	//http://iot-historian-prod.mybluemix.net/historian/api/v0001/jexdp/bbst/bbst2001
+	//http://iot-historian-staging.mybluemix.net/historian/api/v0001/xtcgf/bbst/a003
+	getJSON(historian_url).then(function(data) {
+
+		console.log("getJSON done");
+		var seriesData = [];
+		var palette = new Rickshaw.Color.Palette( { scheme: 'munin' } );
+		var counter = 0;
+	
+		//for(var i = 0;i<10;i++)
+		for(var i = data.length-1;i>=0;i--)
+
+		{
+			var key = 0;
+		
+			for (var j in data[i].evt)
+			{
+				if (i===data.length-1)
+				{
+					seriesData[key]={};
+					seriesData[key].name=j;
+					seriesData[key].color = palette.color();
+					seriesData[key].data=[];
+					//console.log("j: " + j);
+				}
+				//seriesData[key].data[i]={"x":data[i].timestamp.$date,"y":data[i].evt[j]};
+				seriesData[key].data[counter]={};
+				seriesData[key].data[counter].x = data[i].timestamp.$date/1000;
+				seriesData[key].data[counter].y = data[i].evt[j];
+				//seriesData[key].data[i]={"y":data[i].evt[j]};
+				key++;
+			}
+			counter++;
+		
+		
+		}
+		//console.log("seriesData: " + JSON.stringify(seriesData));
+		console.log("number of records: " + counter);
+	    drawGraph(seriesData);
+	  
+	}, function(status) {
+
+	  alert('Something went wrong.');
+	  
+	});
+
+}
+
+function getURLParam( name )
+{
+    // get query string part of url into its own variable
+    var url = window.location.href;
+    var query_string = url.split("?");
+    
+    // make array of all name/value pairs in query string
+    var params = query_string[1].split("&");
+    
+    // loop through the parameters
+    var i = 0;
+    while (i < params.length) {
+        // compare param name against arg passed in
+        var param_item = params[i].split("=");
+        if (param_item[0] == name) {
+            // if they match, return the value
+            return param_item[1];
+        }
+        i++;
+    }
+    return "";
+}
+
+//console.log(getURLParam('device'));
+var queryString = window.location.search.substring(1);
+var tokens = queryString.split('=');
+displayChart(tokens[1]);

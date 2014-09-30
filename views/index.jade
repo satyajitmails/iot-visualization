@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  #title
+  h1= title
+  p Welcome to #{title}
+  
+  
+  div(id='map-canvas', style='width: 100%; height: 100%')
+
+  script(type='text/javascript', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDFbDbVM5gzoaTRHRB5RpVSi7fQNEo1nHc&sensor=true')
+  script(type='text/javascript', src='js/iotdemo.js')

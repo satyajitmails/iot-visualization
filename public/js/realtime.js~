@@ -1,0 +1,266 @@
+var rtGraph = {};
+
+rtGraph.drawGraph = function(seriesData)
+{
+	// instantiate our graph!
+
+	this.graph = new Rickshaw.Graph( {
+		element: document.getElementById("chart"),
+		width: 1000,
+		height: 200,
+		renderer: 'line',
+		series:  seriesData
+	} );
+
+	
+	this.legend = new Rickshaw.Graph.Legend( {
+		element: document.querySelector('#legend'),
+		graph: this.graph
+	} );
+
+	this.shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+	    graph: this.graph,
+	    legend: this.legend
+	});
+
+	this.highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+	    graph: this.graph,
+	    legend: this.legend
+	});
+	
+	this.y_ticks = new Rickshaw.Graph.Axis.Y( {
+		graph: this.graph,
+		orientation: 'left',
+		tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+		element: document.getElementById('y_axis')
+	} );
+
+	this.x_ticks = new Rickshaw.Graph.Axis.X({
+		graph: this.graph,
+		ticks: 10,
+		tickFormat: function(x) {
+			return new Date(x * 1000).toLocaleTimeString();
+		}
+	});
+
+	this.hoverDetail = new Rickshaw.Graph.HoverDetail( {
+	            graph: this.graph
+	} );
+	
+	//this.axes = new Rickshaw.Graph.Axis.Time( { graph: this.graph } );
+		
+	this.graph.render();
+
+
+
+}
+
+rtGraph.graphData = function(data)
+{
+	
+	var key = 0;
+	var seriesData = [];
+	var timestamp = Date.now()/1000;
+	var maxPoints = 25; 
+	for (var j in data.d)
+	{
+
+		console.log(this.graph.series[key].name + "\n" + JSON.stringify(this.graph.series[key].data))
+		this.graph.series[key].data.push({x:timestamp,y:data.d[j]});
+		if (this.graph.series[key].data.length > maxPoints)
+		{
+			this.graph.series[key].data.splice(0,1);//only display up to maxPoints
+		}		
+		//seriesData[key]={};
+		//seriesData[key].name=j;
+		//seriesData[key].data=[];
+		//console.log("j: " + j);
+		//seriesData[
+		//seriesData[key].data[0]={};
+		//seriesData[key].data[0].x = timestamp;
+		//seriesData[key].data[0].y = data.d[j];
+		key++;
+	}
+        //console.log("series:\n" + this.graph.series);
+	//this.graph.series.push(seriesData);
+	this.graph.render();	
+}
+
+
+var getJSON = function(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.setRequestHeader("Authorization","Basic " + btoa(api_key + ":" + api_token));
+    xhr.withCredentials=true;
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      console.log("response headers:\n" + xhr.getAllResponseHeaders());
+      if (status == 200) {
+        resolve(xhr.response);
+      } else {
+        reject(status);
+      }
+    };
+    xhr.send();
+  });
+};
+
+var displayDeviceInfo = function(device){
+	var brandNames={};
+	brandNames.WFW70HEBW='Whirlpool® Duet® 4.1 cu. ft. Front Load Washer with the Cold Wash cycle';
+	brandNames.WDL785SAAM='Whirlpool® Smart Dishwasher with 6th Sense Live™ technology';
+	brandNames.WED95HEDC='Whirlpool® 7.4 cu. ft. Duet® Electric Steam Dryer with Steam Refresh Cycle';
+	brandNames.WED4850BW='Whirlpool® 7.0 cu. ft. HE Dryer with AccuDry™ Sensor Drying System';
+	brandNames.WFL98HEBU='Whirlpool® Smart Front Load Washer with 6th Sense Live™ Technology';
+	brandNames.mc200='Marvell Wifi Development Board';
+
+	var tokens = device.split(':');
+        console.log('brand: ' + brandNames[tokens[2]]);
+	var device_url="https://internetofthings.ibmcloud.com/api/v0001/organizations/" + tokens[1] + "/devices/" + tokens[2] + "/" + tokens[3];
+	console.log("device URL: " + device_url);
+	getJSON(device_url).then(function(data) {
+
+		console.log("device: " + JSON.stringify(data));
+		var device_html='<b>' + brandNames[tokens[2]] + '</b><br>';
+		device_html+='Model: ' + data.type + '<br>';
+		device_html+='Registered: ' + data.registration.date + '<br>';
+		document.getElementById("appliance_info_container").innerHTML=device_html;
+		document.getElementById("appliance_image").src="images/" + tokens[2] + ".jpg";
+	  
+	}, function(status) {
+
+	  alert('Something went wrong.');
+	  
+	});
+	
+
+
+}
+
+
+rtGraph.displayChart = function(device,data){
+	
+
+	
+
+	console.log("data: " + JSON.stringify(data));
+	//var seriesData = [];
+	var palette = new Rickshaw.Color.Palette( { scheme: 'munin' } );
+
+	var key = 0;
+	var seriesData = [];
+	var timestamp = Date.now()/1000;
+	for (var j in data.d)
+	{
+
+		seriesData[key]={};
+		seriesData[key].name=j;
+		seriesData[key].color = palette.color();
+		seriesData[key].data=[];
+		console.log("j: " + j);
+		//seriesData[key].data[i]={"x":data[i].timestamp.$date,"y":data[i].evt[j]};
+		seriesData[key].data[0]={};
+		//seriesData[key].data[0].x = data[i].timestamp.$date/1000;
+		seriesData[key].data[0].x = timestamp;
+		seriesData[key].data[0].y = data.d[j];
+		//seriesData[key].data[i]={"y":data[i].evt[j]};
+		key++;
+	}
+
+    	this.drawGraph(seriesData);
+
+}
+
+function getURLParam( name )
+{
+    // get query string part of url into its own variable
+    var url = window.location.href;
+    var query_string = url.split("?");
+    
+    // make array of all name/value pairs in query string
+    var params = query_string[1].split("&");
+    
+    // loop through the parameters
+    var i = 0;
+    while (i < params.length) {
+        // compare param name against arg passed in
+        var param_item = params[i].split("=");
+        if (param_item[0] == name) {
+            // if they match, return the value
+            return param_item[1];
+        }
+        i++;
+    }
+    return "";
+}
+
+var api_key="a:mz41u:5oxdzprj4j";
+var api_token="*b1En?Tla72Bs@XvXz";
+
+var firstMessage = true;
+var graph = new Object();
+
+
+var clientId=Date.now();
+console.log("clientId: " + clientId);
+
+var client = new Messaging.Client("mz41u.messaging.internetofthings.ibmcloud.com", 8883,"a:mz41u:"+clientId);
+//var client = new Messaging.Client("mqtt1.m2m4connectedlife.com", 1883, "a:mz41u:"+clientId)
+client.onMessageArrived = function(msg) {
+    var topic = msg.destinationName;
+    var payload = JSON.parse(msg.payloadString);
+    console.log("firstMessage: " + firstMessage);
+    //if this is the first message, set things up
+    if (firstMessage)
+    {
+	console.log("first message: " + payload);
+	firstMessage=false;
+	var queryString = window.location.search.substring(1);
+	var tokens = queryString.split('=');
+	rtGraph.displayChart(tokens[1],payload);
+	
+    }
+    else
+    {
+	rtGraph.graphData(payload);
+    }
+};
+
+client.onConnectionLost = function(e){
+	console.log("Connection Lost at " + Date.now() + " : " + e.errorCode + " : " + e.errorMessage);
+	this.connect(connectOptions);
+}
+
+var connectOptions = new Object();
+connectOptions.keepAliveInterval = 3600;
+connectOptions.useSSL=true;
+connectOptions.userName="a:mz41u:5oxdzprj4j";
+connectOptions.password="*b1En?Tla72Bs@XvXz";
+connectOptions.onSuccess = function() {
+	console.log("connected at " + Date.now());
+	//console.log("querystring: " + window.location.search.substring(1).split('=')[1]);
+	var queryString = window.location.search.substring(1).split('=')[1];
+	var tokens = queryString.split(':');
+	
+        client.subscribe("iot-2/type/+/id/" + tokens[3] + "/evt/+/fmt/json");
+        console.log("subscribed to " + "iot-2/type/+/id/" + tokens[3] + "/evt/+/fmt/json");
+        
+        }
+
+connectOptions.onFailure = function(e) {
+        
+        console.log("connection failed at " + Date.now() + "\nerror: " + e.errorCode + " : " + e.errorMessage);
+        
+        }
+
+var queryString = window.location.search.substring(1);
+var tokens = queryString.split('=');
+displayDeviceInfo(tokens[1]);
+
+console.log("about to connect to " + client.host);
+client.connect(connectOptions);
+
+
+
