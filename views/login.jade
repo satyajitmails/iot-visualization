@@ -1,0 +1,19 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(name="description", content="")
+    meta(name="author", content="")
+    link(rel="icon", href="../../favicon.ico")
+    title IoT APIs Demo Login
+    link(rel="stylesheet", href="styles/main.css")
+    link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css", rel="stylesheet")
+  body
+    .container
+      form.form-signin(role="form", action="/login", method="post")
+        h2.form-signin-heading Demo Login
+        input.form-control(type="text", name="api_key", placeholder="IoT APIKey", value="a:mz41u:2ln3ic2mfe", required="", autofocus="")
+        input.form-control(type="password", name="api_token", placeholder="IoT APIToken", value="cz6j4DVh+ZDjM@US6U", required="")
+        button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign in
