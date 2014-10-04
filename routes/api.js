@@ -8,7 +8,17 @@ var historian_path =  base_path + 'historian/';
 var organizations_path= base_path + 'organizations/';
 var getdevices_path = '/devices';
 
+// api to get info of a org
+router.get('/organization', function(req, res) {
 
+  var orgId = req.session.api_key.split(':')[1];
+  console.log("Fetching the devices for orgId "+orgId); 
+  
+  var uri= organizations_path + orgId;
+
+  iot_httpCall(uri, req.session.api_key, req.session.auth_token, res);
+  
+});
 
 // api to get devices of a org
 router.get('/organization/getdevices', function(req, res) {
