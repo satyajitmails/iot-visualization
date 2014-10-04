@@ -4,10 +4,10 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 
-var realtime = require('./routes/realtime');
-var devices = require('./routes/devices');
+var index = require('./routes/index');
 
 var app = express();
 
@@ -20,12 +20,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+// add session to store the api-key and auth token in the session
+app.use(session({secret: 'iotfCloud123456789'}));
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/realtime',realtime);
-app.use('/api',devices);
+app.use('/',index);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

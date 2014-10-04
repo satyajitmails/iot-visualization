@@ -162,7 +162,7 @@ var devices = [];
 $.ajax
 ({
 	type: "GET",
-	url: "/api",
+	url: "/api/organization/getdevices",
 	dataType: 'json',
 	async: true,
 

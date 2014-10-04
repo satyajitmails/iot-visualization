@@ -14,6 +14,10 @@ block content
   script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js')
   script(type='text/javascript',src='js/extensions.js')
 
+  form(align="right", name="form1", method="post", action="/logout")
+    label.logoutLblPos
+      input#submit2(type="submit", name="submit2", value="log out")
+
   h2 Devices
   select(id='deviceslist')
     option(value="") Select a device
