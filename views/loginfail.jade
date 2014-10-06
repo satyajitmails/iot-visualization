@@ -2,11 +2,14 @@ extends layout
 
 block content
     link(rel='stylesheet', href='css/dashboard.css')
-    
-    .container
-      form.form-signin(role="form", action="/login", method="post")
-        h2.form-signin-heading Internet of Things Foundation Login
-        h3 Authentication failed. Check your API key and Auth token of your Organization
-        input.form-control(type="text", name="api_key", placeholder="IoTF APIKey", required="", autofocus="")
-        input.form-control(type="password", name="auth_token", placeholder="IoTF AuthToken", required="")
-        button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign in
+    link(rel="stylesheet", href='http://yui.yahooapis.com/pure/0.5.0/pure-min.css')
+
+    #content    
+    form.pure-form(role="form", action="/login", method="post")
+        fieldset
+            //label(for='api_key') API Key
+            h3 Authentication failed. Check your API key and Auth token of your Organization
+            input(type="text", id="api_key", name="api_key", placeholder="API Key", required)
+            //label(for='authToken') Auth Token
+            input(type="password", id="authToken", name="auth_token", placeholder="Auth Token", required)
+            button.pure-button(type="submit") Sign in
