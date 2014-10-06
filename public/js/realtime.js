@@ -1,6 +1,8 @@
 var rtGraph = {};
 
 var subscribeTopic = "";
+var orgId = "";
+var orgName = "";
 
 rtGraph.drawGraph = function(seriesData)
 {
@@ -158,11 +160,38 @@ rtGraph.displayChart = function(device,data){
 var firstMessage = true;
 var graph = new Object();
 var devices = [];
+var api_key ="";
+var auth_token = "";
+// Get the OrgId and OrgName
+$.ajax
+({
+	type: "GET",
+	url: "/api/v0001/organization",
+	dataType: 'json',
+	async: false,
+
+	success: function (data, status, jq){
+
+		orgId = data.id;
+		orgName = data.name;
+		api_key = data.api_key;
+		auth_token = data.auth_token;
+	},
+	error: function (xhr, ajaxOptions, thrownError) {
+		if(xhr.status === 401 || xhr.status === 403){
+			console.log("Not authorized. Check your Api Key and Auth token");
+			window.location.href="loginfail";
+		}
+		console.log("Not able to fetch the Organization details");
+		console.log(xhr.status);
+		console.log(thrownError);
+	}
+});
 
 $.ajax
 ({
 	type: "GET",
-	url: "/api/organization/getdevices",
+	url: "/api/v0001/organization/getdevices",
 	dataType: 'json',
 	async: true,
 
@@ -180,35 +209,13 @@ $.ajax
 });
 
 
-$( "#deviceslist" ).change(function() {
-	// var item = $("#deviceslist option:selected").text();
-	var item = $(this).val();
-	console.log( "Handler for .change() called. "+item );
-	var tokens = item.split(':');
+var clientId="a:"+orgId+":" +Date.now();
 
-	if(subscribeTopic != "") {
-		console.log("Unsubscribing to " + subscribeTopic);
-		client.unsubscribe(subscribeTopic);
-	}
-	subscribeTopic = "iot-2/type/+/id/" + tokens[3] + "/evt/+/fmt/json";
-	client.subscribe(subscribeTopic);
-	if(!firstMessage) {
-		//clear prev graphs
-		$('#chart').empty();
-		$('#timeline').empty();
-		$('#legend').empty();
-	}
-	firstMessage = true;
-	console.log("subscribed to " + subscribeTopic);
-
-});
-
-
-var clientId=Date.now();
 console.log("clientId: " + clientId);
+var hostname = orgId+".messaging.internetofthings.ibmcloud.com";
 
-var client = new Messaging.Client("zbicf.messaging.internetofthings.ibmcloud.com", 1883,"a:zbicf:"+clientId);
-//var client = new Messaging.Client("mqtt1.m2m4connectedlife.com", 1883, "a:mz41u:"+clientId)
+var client = new Messaging.Client(hostname, 1883,clientId);
+
 client.onMessageArrived = function(msg) {
 	var topic = msg.destinationName;
 	
@@ -235,8 +242,8 @@ client.onConnectionLost = function(e){
 var connectOptions = new Object();
 connectOptions.keepAliveInterval = 3600;
 connectOptions.useSSL=false;
-connectOptions.userName="a:zbicf:jqvgu9f53a";
-connectOptions.password="F(9eJikPIyI067r!+M";
+connectOptions.userName=api_key;
+connectOptions.password=auth_token;
 	connectOptions.onSuccess = function() {
 		console.log("connected at " + Date.now());
 
@@ -251,3 +258,61 @@ connectOptions.password="F(9eJikPIyI067r!+M";
 
 	console.log("about to connect to " + client.host);
 	client.connect(connectOptions);
+
+//update the devices dropdown list
+$( "#deviceslist" ).change(function() {
+
+	var subscribeOptions = {
+		qos : 0,
+		onSuccess : function() {
+			console.log("subscribed to " + subscribeTopic);
+		},
+		onFailure : function(){
+			console.log("Failed to subscribe to " + subscribeTopic);
+			console.log("Visualization failed, as not able to subscribe to get messages");
+		}
+	};
+	var item = $(this).val();
+	var tokens = item.split(':');
+
+	if(subscribeTopic != "") {
+		console.log("Unsubscribing to " + subscribeTopic);
+		client.unsubscribe(subscribeTopic);
+	}
+	subscribeTopic = "iot-2/type/" + tokens[2] + "/id/" + tokens[3] + "/evt/+/fmt/json";
+	client.subscribe(subscribeTopic,subscribeOptions);
+	if(!firstMessage) {
+		//clear prev graphs
+		$('#chart').empty();
+		$('#timeline').empty();
+		$('#legend').empty();
+	}
+	firstMessage = true;
+	
+
+});
+
+//historian code
+/*$( "#deviceslist" ).change(function() {
+
+	var item = $(this).val();
+	var tokens = item.split(':');
+
+	$.ajax
+	({
+		type: "GET",
+		url: "/api/v0001/historian/"+tokens[1]+"/"+tokens[2]+"/"+tokens[3],
+		dataType: 'json',
+		async: true,
+
+		success: function (data, status, jq){
+
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			console.log(xhr.status);
+			console.log(thrownError);
+		}
+	});
+	
+
+});*/

@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET realtime page. */
+// Login page
 router.get('/login', function(req, res) {
   res.render('login', { title: 'IBM Internet of Things Foundation' });
+});
+
+//login page after a login failure
+router.get('/loginfail', function(req, res) {
+  res.render('loginfail', { title: 'IBM Internet of Things Foundation' });
 });
 
 router.post('/login', function(req, res) {

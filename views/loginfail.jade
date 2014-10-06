@@ -1,0 +1,19 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(name="description", content="")
+    meta(name="author", content="")
+    link(rel="icon", href="../../favicon.ico")
+    title IoT APIs Demo Login
+    link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css", rel="stylesheet")
+  body
+    .container
+      form.form-signin(role="form", action="/login", method="post")
+        h2.form-signin-heading Internet of Things Foundation Login
+        h3 Authentication failed. Check your API key and Auth token of your Organization
+        input.form-control(type="text", name="api_key", placeholder="IoTF APIKey", required="", autofocus="")
+        input.form-control(type="password", name="auth_token", placeholder="IoTF AuthToken", required="")
+        button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign in
