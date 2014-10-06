@@ -7,7 +7,13 @@ var orgName = "";
 rtGraph.drawGraph = function(seriesData)
 {
 	// instantiate our graph!
-	this.palette = new Rickshaw.Color.Palette( { scheme: 'munin' } );
+	this.palette = new Rickshaw.Color.Palette( { scheme: [
+        "#7f1c7d",
+ 		"#00b2ef",
+		"#00649d",
+		"#00a6a0",
+		"#ee3e96"
+    ] } );
 
 	this.graph = new Rickshaw.Graph( {
 		element: document.getElementById("chart"),
@@ -130,7 +136,13 @@ rtGraph.displayChart = function(device,data){
 
 	//console.log("data: " + JSON.stringify(data));
 	//var seriesData = [];
-	var palette = new Rickshaw.Color.Palette( { scheme: 'munin' } );
+	var palette = new Rickshaw.Color.Palette( { scheme: [
+        "#7f1c7d",
+ 		"#00b2ef",
+		"#00649d",
+		"#00a6a0",
+		"#ee3e96"
+    ] } );
 
 	var key = 0;
 	var seriesData = [];
