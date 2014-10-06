@@ -3,14 +3,14 @@ extends layout
 block content
   h1= title  
 
-  link(rel='stylesheet', href='js/rickshaw/rickshaw.min.css')
+  link(rel='stylesheet', href='css/rickshaw/rickshaw.min.css')
 
   link(rel='stylesheet', href='css/historian.css')
   link(rel='stylesheet', href='css/extensions.css?v=2')
 
   script(type='text/javascript', src='js/d3/d3.v3.js')
   script(type='text/javascript', src='js/rickshaw/rickshaw.min.js')
-  script(type='text/javascript', src='js/jquery.min.js')
+  script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
   script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js')
   script(type='text/javascript',src='js/extensions.js')
 
@@ -66,3 +66,7 @@ block content
   
   script(type='text/javascript', src='js/mqttws31.js')
   script(type='text/javascript', src='js/realtime.js')
+
+  form(align="right", name="form1", method="post", action="/logout")
+    label.logoutLblPos
+      input#submit2(type="submit", name="submit2", value="log out")

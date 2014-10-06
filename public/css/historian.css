@@ -30,3 +30,9 @@
 	display: inline-block;
 	position: relative;
 }
+.logoutLblPos{
+
+   position:fixed;
+   right:10px;
+   top:5px;
+}
