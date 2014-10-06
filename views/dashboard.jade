@@ -15,28 +15,32 @@ block content
   script(type='text/javascript',src='js/extensions.js')
   //-script(type='text/javascript',src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js')
 
-  h2 Devices
-  select(id='deviceslist')
-    option(value="") Select a device
+  h2.iottext
   #content
-  form#side_panel
-    h1 Sensors
+  form#side_panel.iotsidepanel
+    div.devices
+      h1.devicesText Device:
+      select.devicesSelect#deviceslist
+        option(value='') Select a device
+    h1.iottext Sensors
     section
       #legend
+    h1.iottext Chart Type
     section
       #renderer_form.toggler
-        input#area(type="radio", name="renderer", value="area", checked="")
+        input#area(type="radio", name="renderer", value="area")
         label(for="area") area
         input#bar(type="radio", name="renderer", value="bar")
         label(for="bar") bar
-        input#line(type="radio", name="renderer", value="line")
+        input#line(type="radio", name="renderer", value="line", checked="")
         label(for="line") line
         input#scatter(type="radio", name="renderer", value="scatterplot")
         label(for="scatter") scatter
+    h1.iottext Customize
     section
-      #offset_form
+      #offset_form.iotoptionpanel
         label(for="stack")
-          input#stack(type="radio", name="offset", value="zero", checked="")
+          input#stack(type="radio", name="offset", value="zero")
           span stack
         label(for="stream")
           input#stream(type="radio", name="offset", value="wiggle")
@@ -45,9 +49,9 @@ block content
           input#pct(type="radio", name="offset", value="expand")
           span pct
         label(for="value")
-          input#value(type="radio", name="offset", value="value")
+          input#value(type="radio", name="offset", value="value", checked="")
           span value
-      #interpolation_form
+      #interpolation_form.iotoptionpanel
         label(for="cardinal")
           input#cardinal(type="radio", name="interpolation", value="cardinal", checked="")
           span cardinal
@@ -57,7 +61,6 @@ block content
         label(for="step")
           input#step(type="radio", name="interpolation", value="step-after")
           span step
-    section
       
     
   #chart_container
@@ -70,4 +73,4 @@ block content
 
   form(align="right", name="form1", method="post", action="/logout")
     label.logoutLblPos
-      input#submit2(type="submit", name="submit2", value="log out")
+      input#submit2(type="submit", name="submit2", value="logout")

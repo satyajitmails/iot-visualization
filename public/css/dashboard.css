@@ -31,8 +31,58 @@
 	position: relative;
 }
 .logoutLblPos{
-
-   position:fixed;
-   right:10px;
-   top:5px;
+	display:inline-block;
+ 	position:fixed;
+   	right:10px;
+   	top:5px;
+}
+.iotsidepanel {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #58595b;
+}
+.iotoptionpanel{
+	margin-right: 5px;
+	margin-left: 5px;
+	border-style: solid;
+    border-width: 1px;
+    border-color: #58595b;
+}
+.ioticon {
+	display:inline-block;
+	vertical-align: middle;
+	margin-right: 20px;
+}
+.iottext {
+	font-family: Arial,sans-serif;
+	color: #58595b;
+	line-height: 30%;
+	margin-left: 10px;
+}
+.iothead {
+	display:inline-block;
+	vertical-align: middle;
+	text-shadow: 2px;
+	font-weight: bold;
+	font-size: 30px;
+}
+.devices {
+	background-color: #58595b;
+	width: 260px;
+}
+.devicesText {
+	display:inline-block;
+	font-family: Arial,sans-serif;
+	color: #FFFFFF;
+	margin-right: 20px;
+	text-align: justify;
+	margin-left: 10px;
+}
+.devicesSelect {
+	border: 1px solid #ccc;
+	border: 1px solid #C8BFC4;
+	padding: 4px 3px 5px 5px;
+    border-radius: 4px;
+    box-shadow: inset 1px 1px 2px #ddd8dc;
+    background: url(new_arrow.png) no-repeat right #ddd;
 }
