@@ -30,6 +30,9 @@
 	display: inline-block;
 	position: relative;
 }
+body {
+  padding: 10px;
+}
 .logoutLblPos{
  	position:fixed;
    	right:25px;
