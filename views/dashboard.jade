@@ -61,6 +61,9 @@ block content
         label(for="step")
           input#step(type="radio", name="interpolation", value="step-after")
           span step
+        label(for="hidd")
+          input#hidd(type="radio", name="interpolation", value="", hidden="true")
+          span
       
     
   #chart_container
@@ -73,4 +76,4 @@ block content
 
   form(align="right", name="form1", method="post", action="/logout")
     label.logoutLblPos
-      input#submit2(type="submit", name="submit2", value="logout")
+      input.signButton#submit2(type="submit", name="submit2", value="logout")

@@ -8,7 +8,8 @@ block content
     form.pure-form(role="form", action="/login", method="post")
         fieldset
             //label(for='api_key') API Key
-            input(type="text", id="api_key", name="api_key", placeholder="API Key", required)
+            block loginfail
+            input.signInputs(type="text", id="api_key", name="api_key", placeholder="API Key", required)
             //label(for='authToken') Auth Token
-            input(type="password", id="authToken", name="auth_token", placeholder="Auth Token", required)
-            button.pure-button(type="submit") Sign in
+            input.signInputs(type="password", id="authToken", name="auth_token", placeholder="Auth Token", required)
+            button.signButton(type="submit") Sign in

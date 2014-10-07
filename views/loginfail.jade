@@ -1,15 +1,5 @@
-extends layout
+extends login
 
-block content
-    link(rel='stylesheet', href='css/dashboard.css')
-    link(rel="stylesheet", href='http://yui.yahooapis.com/pure/0.5.0/pure-min.css')
-
-    #content    
-    form.pure-form(role="form", action="/login", method="post")
-        fieldset
-            //label(for='api_key') API Key
-            h3 Authentication failed. Check your API key and Auth token of your Organization
-            input(type="text", id="api_key", name="api_key", placeholder="API Key", required)
-            //label(for='authToken') Auth Token
-            input(type="password", id="authToken", name="auth_token", placeholder="Auth Token", required)
-            button.pure-button(type="submit") Sign in
+block loginfail
+    
+    h3.iottext Authentication failed. Check your API key and Auth token of your Organization
