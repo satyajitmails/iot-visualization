@@ -4,6 +4,7 @@ var subscribeTopic = "";
 var orgId = "";
 var orgName = "";
 
+// function to invoke Rickshaw and plot the graph
 rtGraph.drawGraph = function(seriesData)
 {
 	// instantiate our graph!
@@ -130,11 +131,7 @@ rtGraph.graphData = function(data)
 
 
 rtGraph.displayChart = function(device,data){
-	
 
-	
-
-	//console.log("data: " + JSON.stringify(data));
 	//var seriesData = [];
 	var palette = new Rickshaw.Color.Palette( { scheme: [
         "#7f1c7d",
@@ -174,8 +171,9 @@ var graph = new Object();
 var devices = [];
 var api_key ="";
 var auth_token = "";
+
 // Get the OrgId and OrgName
-$.ajax
+/*$.ajax
 ({
 	type: "GET",
 	url: "/api/v0001/organization",
@@ -200,6 +198,7 @@ $.ajax
 	}
 });
 
+//get the devices list of the org
 $.ajax
 ({
 	type: "GET",
@@ -218,7 +217,7 @@ $.ajax
 		console.log(xhr.status);
 		console.log(thrownError);
 	}
-});
+});*/
 
 
 var clientId="a:"+orgId+":" +Date.now();
@@ -232,7 +231,7 @@ client.onMessageArrived = function(msg) {
 	var topic = msg.destinationName;
 	
 	var payload = JSON.parse(msg.payloadString);
-	//if this is the first message, set things 
+	//First message, instantiate the graph  
     if (firstMessage)
     {
     	firstMessage=false;
@@ -257,21 +256,17 @@ connectOptions.useSSL=false;
 connectOptions.userName=api_key;
 connectOptions.password=auth_token;
 	connectOptions.onSuccess = function() {
-		console.log("connected at " + Date.now());
-
+		console.log("MQTT connected at " + Date.now());
 	}
 
 	connectOptions.onFailure = function(e) {
-
-		console.log("connection failed at " + Date.now() + "\nerror: " + e.errorCode + " : " + e.errorMessage);
-
+		console.log("MQTT connection failed at " + Date.now() + "\nerror: " + e.errorCode + " : " + e.errorMessage);
 	}
 
-
 	console.log("about to connect to " + client.host);
-	client.connect(connectOptions);
+	//client.connect(connectOptions);
 
-//update the devices dropdown list
+// Subscribe to the device when the device ID is selected.
 $( "#deviceslist" ).change(function() {
 
 	var subscribeOptions = {
@@ -300,11 +295,9 @@ $( "#deviceslist" ).change(function() {
 		$('#legend').empty();
 	}
 	firstMessage = true;
-	
-
 });
 
-//historian code
+//historian code for getting the device
 /*$( "#deviceslist" ).change(function() {
 
 	var item = $(this).val();
@@ -328,3 +321,12 @@ $( "#deviceslist" ).change(function() {
 	
 
 });*/
+
+//Toggle historian options when user selects historic/live data radio buttons
+$('#historic').change(function() {
+	$('#historicData').show(500);
+});
+
+$('#realtime').change(function() {
+	$('#historicData').hide(500);
+});

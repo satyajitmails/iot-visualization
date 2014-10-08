@@ -34,9 +34,12 @@ body {
   padding: 10px;
 }
 .logoutLblPos{
- 	position:fixed;
-   	right:25px;
-   	top:25px;
+   	display:inline-block;
+	font-family: Arial,sans-serif;
+	color: #58595b;
+	vertical-align: middle;
+	margin-right: 50px;
+	float: right;
 }
 .iotsidepanel {
     border-style: solid;
@@ -53,13 +56,25 @@ body {
 .ioticon {
 	display:inline-block;
 	vertical-align: middle;
-	margin-right: 20px;
+	margin-right: 3px;
 }
 .iottext {
 	font-family: Arial,sans-serif;
 	color: #58595b;
 	line-height: 30%;
 	margin-left: 10px;
+}
+.iotlabel {
+	font-family: Arial,sans-serif;
+	color: #58595b;
+	margin-right: 30px;
+}
+.iotlabelleft {
+	font-family: Arial,sans-serif;
+	color: #58595b;
+	margin-left: 30px;
+	vertical-align: middle;
+	display:inline-block;
 }
 .iothead {
 	display:inline-block;
@@ -87,6 +102,17 @@ body {
     border-radius: 4px;
     box-shadow: inset 1px 1px 2px #ddd8dc;
     background: url(new_arrow.png) no-repeat right #ddd;
+}
+.eventsSelect {
+	border: 1px solid #ccc;
+	border: 1px solid #C8BFC4;
+	padding: 4px 3px 5px 5px;
+    border-radius: 4px;
+    box-shadow: inset 1px 1px 2px #ddd8dc;
+    background: url(new_arrow.png) no-repeat right #ddd;
+}
+.histdate {
+	float: right;
 }
 .signButton {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #58595b), color-stop(1, #6d6d6e));

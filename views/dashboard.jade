@@ -1,19 +1,27 @@
 extends layout
 
+block signout
+  a.logoutLblPos(href="/logout") Use a different API key and Auth Token
 block content 
 
   link(rel='stylesheet', href='css/rickshaw/rickshaw.min.css')
 
   link(rel='stylesheet', href='css/dashboard.css')
   link(rel='stylesheet', href='css/extensions.css?v=2')
-  //-link(rel="stylesheet", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css')
+  link(rel='stylesheet', href='http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css')
+  //link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css')
 
   script(type='text/javascript', src='js/d3/d3.v3.js')
   script(type='text/javascript', src='js/rickshaw/rickshaw.min.js')
   script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
-  script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js')
+  script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js')
   script(type='text/javascript',src='js/extensions.js')
-  //-script(type='text/javascript',src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js')
+  //script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js')
+  script
+    $(function() {
+    $( "#historicFrom" ).datepicker();
+    $( "#historicTo" ).datepicker();
+    });
 
   h2.iottext
   #content
@@ -22,6 +30,33 @@ block content
       h1.devicesText Device:
       select.devicesSelect#deviceslist
         option(value='') Select a device
+    h1.iottext Data
+    section
+      #visualtype
+        input#realtime(type='radio', value='realtime', name='visualtype', checked="")
+        label.iotlabel(for="realtime") Live Data
+        input#historic(type='radio', value='historic', name='visualtype')
+        label.iotlabel(for="historic") Historic Data
+
+        #historicData Historic Data
+          section
+            input#historicRecentEvents(type='radio', value='events', name='visualtype')
+            label.iotlabel(for="historicRecentEvents") Most Recent
+            select.eventsSelect#eventsnum
+              option(value='1') 1
+              option(value='50') 50
+              option(value='100') 100
+              option(value='500') 500
+            label.iottext(for="eventsnum") Events
+            input#historicDateRange(type='radio', value='events', name='visualtype')
+            label.iotlabel(for="historicRecentEvents") Time Range
+            br
+            label.iotlabelleft(for="historicFrom") From
+            input.histdate#historicFrom(type='text')
+            br
+            label.iotlabelleft(for="historicTo") To
+            input.histdate#historicTo(type='text')
+
     h1.iottext Sensors
     section
       #legend
@@ -73,7 +108,3 @@ block content
   
   script(type='text/javascript', src='js/mqttws31.js')
   script(type='text/javascript', src='js/realtime.js')
-
-  form(align="right", name="form1", method="post", action="/logout")
-    label.logoutLblPos
-      input.signButton#submit2(type="submit", name="submit2", value="Sign Out")

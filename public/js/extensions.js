@@ -132,4 +132,3 @@ var RenderControls = function(args) {
 
 	this.initialize();
 };
-
