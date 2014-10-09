@@ -334,11 +334,26 @@ function plotHistoricGraph(){
 	var tokens = item.split(':');
 
 	var top = $( 'input[name=historicQuery]:checked' ).val();
-	console.log("His called "+top);
+	console.log("called "+top);
+	var queryParam = {};
+
+	if(top == "topEvents") {
+		queryParam = {
+			top: $(historicTopRange).spinner( "value" )
+		};
+	} 
+	else if(top == "dateRange") {
+		queryParam = {
+			start: $(historicStarts).val()*1000,
+			end: $(historicEnds).val()*1000
+		};
+	}
+	console.log(queryParam);
 	$.ajax
 	({
 		type: "GET",
 		url: "/api/v0001/historian/"+tokens[1]+"/"+tokens[2]+"/"+tokens[3],
+		data: queryParam,
 		dataType: 'json',
 		async: true,
 
