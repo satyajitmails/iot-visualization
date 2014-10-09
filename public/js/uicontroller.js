@@ -58,10 +58,11 @@ $.ajax
 
 var realtime = new Realtime(orgId, api_key, auth_token);
 
+var historian = new Historian();
 $( "#deviceslist" ).change(function() {
 
 	if(isHistorian){
-		realtime.plotHistoricGraph();
+		historian.plotHistoricGraph();
 	} else {
 		realtime.plotRealtimeGraph();
 	}
