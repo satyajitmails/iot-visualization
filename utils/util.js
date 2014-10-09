@@ -2,6 +2,7 @@
 var util = {};
 
 var https = require('https');
+var querystring = require('querystring');
 
 //Basic HTTP options for Internet of Things Foundation
 var iot_foundation_api_options = {
@@ -10,10 +11,14 @@ var iot_foundation_api_options = {
   rejectUnauthorized: false
 };
 
-util.iot_httpCall = function( URI, api_key, auth_token, res, sendCred){
+util.iot_httpCall = function( URI, api_key, auth_token, res, queryObj, sendCred){
   
   iot_foundation_api_options.auth=api_key + ':' + auth_token;
   iot_foundation_api_options.path=URI;
+  if(queryObj){
+    console.log("Query called with : "+querystring.stringify(queryObj)); 
+    iot_foundation_api_options.path=URI+"?"+querystring.stringify(queryObj);
+  }
   
   var http_req = https.get(iot_foundation_api_options, function(http_res) {
     var data = [];

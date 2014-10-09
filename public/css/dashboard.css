@@ -112,6 +112,7 @@ body {
     background: url(new_arrow.png) no-repeat right #ddd;
 }
 .histdate {
+	margin-top: 7px;
 	float: right;
 }
 .signButton {
@@ -153,4 +154,7 @@ body {
 }
 .signInputs {
 	margin-right: 10px;
+}
+.spinner {
+	width: 40px;
 }

@@ -3,6 +3,8 @@ var rtGraph = {};
 var subscribeTopic = "";
 var orgId = "";
 var orgName = "";
+//flag for historian
+var isHistorian = false;
 
 // function to invoke Rickshaw and plot the graph
 rtGraph.drawGraph = function(seriesData)
@@ -173,7 +175,7 @@ var api_key ="";
 var auth_token = "";
 
 // Get the OrgId and OrgName
-/*$.ajax
+$.ajax
 ({
 	type: "GET",
 	url: "/api/v0001/organization",
@@ -217,7 +219,7 @@ $.ajax
 		console.log(xhr.status);
 		console.log(thrownError);
 	}
-});*/
+});
 
 
 var clientId="a:"+orgId+":" +Date.now();
@@ -264,37 +266,42 @@ connectOptions.password=auth_token;
 	}
 
 	console.log("about to connect to " + client.host);
-	//client.connect(connectOptions);
+	client.connect(connectOptions);
 
 // Subscribe to the device when the device ID is selected.
 $( "#deviceslist" ).change(function() {
 
-	var subscribeOptions = {
-		qos : 0,
-		onSuccess : function() {
-			console.log("subscribed to " + subscribeTopic);
-		},
-		onFailure : function(){
-			console.log("Failed to subscribe to " + subscribeTopic);
-			console.log("Visualization failed, as not able to subscribe to get messages");
-		}
-	};
-	var item = $(this).val();
-	var tokens = item.split(':');
+	if(isHistorian){
+		plotHistoricGraph();
+	} else {
+		var subscribeOptions = {
+			qos : 0,
+			onSuccess : function() {
+				console.log("subscribed to " + subscribeTopic);
+			},
+			onFailure : function(){
+				console.log("Failed to subscribe to " + subscribeTopic);
+				console.log("Visualization failed, as not able to subscribe to get messages");
+			}
+		};
+		var item = $(this).val();
+		var tokens = item.split(':');
 
-	if(subscribeTopic != "") {
-		console.log("Unsubscribing to " + subscribeTopic);
-		client.unsubscribe(subscribeTopic);
+		if(subscribeTopic != "") {
+			console.log("Unsubscribing to " + subscribeTopic);
+			client.unsubscribe(subscribeTopic);
+		}
+		subscribeTopic = "iot-2/type/" + tokens[2] + "/id/" + tokens[3] + "/evt/+/fmt/json";
+		client.subscribe(subscribeTopic,subscribeOptions);
+		if(!firstMessage) {
+			//clear prev graphs
+			$('#chart').empty();
+			$('#timeline').empty();
+			$('#legend').empty();
+		}
+		firstMessage = true;
 	}
-	subscribeTopic = "iot-2/type/" + tokens[2] + "/id/" + tokens[3] + "/evt/+/fmt/json";
-	client.subscribe(subscribeTopic,subscribeOptions);
-	if(!firstMessage) {
-		//clear prev graphs
-		$('#chart').empty();
-		$('#timeline').empty();
-		$('#legend').empty();
-	}
-	firstMessage = true;
+	
 });
 
 //historian code for getting the device
@@ -322,11 +329,36 @@ $( "#deviceslist" ).change(function() {
 
 });*/
 
+function plotHistoricGraph(){
+	var item = $( "#deviceslist" ).val();
+	var tokens = item.split(':');
+
+	var top = $( 'input[name=historicQuery]:checked' ).val();
+	console.log("His called "+top);
+	$.ajax
+	({
+		type: "GET",
+		url: "/api/v0001/historian/"+tokens[1]+"/"+tokens[2]+"/"+tokens[3],
+		dataType: 'json',
+		async: true,
+
+		success: function (data, status, jq){
+
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			console.log(xhr.status);
+			console.log(thrownError);
+		}
+	});
+}
+
 //Toggle historian options when user selects historic/live data radio buttons
 $('#historic').change(function() {
 	$('#historicData').show(500);
+	isHistorian = true;
 });
 
 $('#realtime').change(function() {
 	$('#historicData').hide(500);
+	isHistorian = false;
 });
